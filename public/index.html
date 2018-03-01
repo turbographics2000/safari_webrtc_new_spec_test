@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer type="module" src="client.js"></script>
+</head>
+
+<body>
+    <div>
+        <button id="btnConnect">接続</button>
+        <button id="btnReload">リロード</button>
+        <select id="videoSelect"></select>
+    </div>
+    <div class="view local">
+        <div class="title">local</div>
+        <video id="localView" autoplay preload muted></video>
+    </div>
+    <div class="view remote">
+        <div class="title">remote</div>
+        <video id="remoteView" autoplay preload muted></video>
+    </div>
+
+    <div class="log-container">
+        <div class="title">log list
+            <fieldset>
+                <legend>アクションタイプフィルター</legend>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="" checked>なし</label>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="pc-signaling">
+                    <span class="filter pc">PeerConnection</span>/
+                    <span class="filter signaling">Signaling</span>
+                </label>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="pc">
+                    <span class="filter pc">PeerConnection</span>
+                </label>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="signaling">
+                    <span class="filter signaling">Signaling</span>
+                </label>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="ui">
+                    <span class="filter ui">UI</span>
+                </label>
+                <label><input type="radio" name="logActionTypeFilter" class="log-filter" value="error">
+                    <span class="filter error">エラー</span>
+                </label>
+            </fieldset>
+            <fieldset>
+                <legend>データタイプフィルター</legend>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="" checked>なし</label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="candidate-offer-answer">
+                    <span class="filter candidate">Candidate</span>/
+                    <span class="filter offer">Offer</span>/
+                    <span class="filter answer">Answer</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="offer-answer-stream">
+                    <span class="filter offer">Offer</span>/
+                    <span class="filter answer">Answer</span>/
+                    <span class="filter stream">Stream</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="offer-answer">
+                    <span class="filter offer">Offer</span>/
+                    <span class="filter answer">Answer</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="candidate">
+                    <span class="filter candidate">Candidate</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="offer">
+                    <span class="filter offer">Offer</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="answer">
+                    <span class="filter answer">Answer</span>
+                </label>
+                <label><input type="radio" name="logDataTypeFilter" class="log-filter" value="stream">
+                    <span class="filter stream">Stream</span>
+                </label>
+            </fieldset>
+            <button id="btnLogClear" class="material-icons">delete</button>
+        </div>
+        <div id="logList"></div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+.view {
+    border:1px solid;
+    margin: 10px;
+    width: 300px;
+    display: inline-block;
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+
+.log-container {
+    border: 1px solid;
+}
+
+#logList {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: small;
+    overflow: auto;
+}
+
+#btnLogClear {
+    float: right;
+    border: 1px;
+    cursor: pointer;
+}
+
+#logList .item {
+    display: grid;
+    grid-template-columns: 100px 180px 1fr;
+    margin: 2px 0;
+    border-radius: 3px;
+    opacity: .3;
+}
+
+#logList .item.hilight {
+    opacity: 1;
+}
+
+.log-container .filter {
+    padding: 4px;
+    border-radius: 3px;
+}
+#logList .item.pc, .filter.pc {
+    background: #ff7f7f;
+    color: white;
+}
+
+#logList .item.signaling, .filter.signaling {
+    background: #ff7fff;
+    color: white;
+}
+
+#logList .item.ui, .filter.ui {
+    background: #bf7fff;
+    color: white;
+}
+
+#logList .item .stream, .filter.stream {
+    background: #7f7fff;
+    color: white;
+}
+
+#logList .item .offer, .filter.offer {
+    background: #7fff7f;
+    color: black;
+}
+
+#logList .item .answer, .filter.answer {
+    background: #7fbfff;
+    color: black;
+}	
+
+#logList .item .candidate, .filter.candidate {
+    background: #7fffff;
+    color: black;
+}	
+
+#logList .item.error, .filter.error {
+    background: hsl(0, 83%, 88%);
+    color: red;
+}
+
+#logList .item.stream,
+#logList .item.track {
+    background: hsl(27, 95%, 92%);
+}
+
+#logList .time {
+    grid-column: 1;
+}
+
+#logList .msg {
+    grid-column: 2;
+}
+
+#logList .data {
+    grid-column: 3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 10px;
+    border-radius: 3px;
+    padding: 4px;
+}
+
+#logList .data.hide {
+    display: none;
+}
+
+.filter-title{
+    display: inline-block;
+    width: 180px;
+    font-size: small;
+}
+
+.log-container label {
+    margin-right: 10px;
+    font-size: small;
+}
+
