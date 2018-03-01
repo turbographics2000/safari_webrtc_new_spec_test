@@ -1,0 +1,12 @@
+.view {
+    border:1px solid;
+    margin: 10px;
+    width: 300px;
+    display: inline-block;
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+

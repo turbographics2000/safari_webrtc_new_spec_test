@@ -1,53 +1,34 @@
 const socket = io();
-const myId = (new MediaStream()).id;
-let pc = null;
-let cnv = null;
-let ctx = null;
-let rafId = null;
+let pc = null, cnv = null, ctx = null, rafId = null;
 
-function sendMsg(data, dst) {
-    const msg = Object.assign({ src: myId, dst: dst }, data);
-    socket.emit('sig', msg);
-}
-
-btnConnect.onclick = evt => createPC(true);
-btnReload.onclick = evt => {
-    socket.emit('sig', { reload: true });
-    setTimeout(_ => {
-        location.reload(true);
-    }, 100);
-}
-btnLogClear.onclick = evt => {
-    logList.innerHTML = '';
-};
-const filter = {
-    action: null,
-    data: null
-};
 navigator.mediaDevices.enumerateDevices().then(devices => {
     const camDevices = devices.filter(device => device.kind === 'videoinput');
     camDevices.forEach((device, i) => {
         createElm('option', [], device.label || `cam-${i}`, device.deviceId, videoSelect);
-    })
-})
-document.querySelectorAll('input[name=logActionTypeFilter]').forEach(elm => {
-    elm.onclick = evt => {
-        filter.action = evt.target.value.split('-');
-        if (filter.action.length === 1 && filter.action[0] === '') {
-            filter.action = null;
-        }
-        logFilter();
-    };
+    });
 });
-document.querySelectorAll('input[name=logDataTypeFilter]').forEach(elm => {
+
+btnConnect.onclick = evt => createPC(true);
+
+btnReload.onclick = evt => {
+    socket.emit('sig', { reload: true });
+    setTimeout(_ => location.reload(true), 100);
+}
+
+btnLogClear.onclick = evt => logList.innerHTML = '';
+
+const filter = {action: null, data: null};
+document.querySelectorAll('input[name=logActionTypeFilter]').forEach(elm => filterEventHandler(elm, 'action'));
+document.querySelectorAll('input[name=logDataTypeFilter]').forEach(elm => filterEventHandler(elm, 'data'));
+function filterEventHandler(elm, type) {
     elm.onclick = evt => {
         filter.data = evt.target.value.split('-');
-        if (filter.data.length === 1 && filter.data[0] === '') {
-            filter.data = null;
+        if (filter[type].length === 1 && filter[type][0] === '') {
+            filter[type] = null;
         }
         logFilter();
     };
-});
+}
 
 async function createPC(isCaller) {
     pc = new RTCPeerConnection(null);
@@ -55,8 +36,8 @@ async function createPC(isCaller) {
     pc.onicecandidate = evt => {
         addLog('pc', 'candidate', 'onicecandidate', evt.candidate);
         addLog('signaling', 'candidate', 'send candidate', evt.candidate);
-        sendMsg({ candidate: evt.candidate });
-    }
+        socket.emit('sig', { candidate: evt.candidate });
+    };
 
     pc.ontrack = evt => {
         addLog('pc', 'stream', 'ontrack', evt.streams[0]);
@@ -70,7 +51,7 @@ async function createPC(isCaller) {
         addLog('pc', 'offer', 'createOffer()', offer);
         await pc.setLocalDescription(offer);
         addLog('pc', 'offer', 'setLocalDescription()', offer);
-        sendMsg({ offer });
+        socket.emit('sig', { offer });
         addLog('signaling', 'offer', 'send offer', offer);
     };
 
@@ -80,7 +61,7 @@ async function createPC(isCaller) {
         localView.srcObject = stream;
         addLog('ui', 'stream', 'set localView.srcObject', stream);
         stream.getTracks().forEach(track => {
-            pc.addTrack(track);
+            pc.addTrack(track, stream);
             addLog('pc', 'stream', 'addTrack()', track);
         });
     } else {
@@ -95,10 +76,10 @@ async function createPC(isCaller) {
                 const stream = cnv.captureStream(15);
                 addLog('ui', 'stream', 'captureStream()', stream);
                 stream.getTracks().forEach(track => {
-                    pc.addTrack(track);
+                    pc.addTrack(track, stream);
                     addLog('pc', 'stream', 'addTrack()', track);
                 });
-            })
+            });
         };
         localView.src = 'sintel.mp4';
     }
@@ -119,7 +100,7 @@ socket.on('connect', _ => {
             addLog('pc', 'answer', 'createAnswer', answer);
             await pc.setLocalDescription(answer);
             addLog('pc', 'answer', 'setLocalDescription', answer);
-            sendMsg({ answer });
+            socket.emit('sig', { answer });
             addLog('signaling', 'answer', 'send answer', answer);
         } else if (data.answer) {
             addLog('signaling', 'answer', 'receive answer', data.answer);
